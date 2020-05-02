@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.dao.CouponMapper">
+	<!-- 1. 랜덤한 코드의 쿠폰을 N개 생성하여 DB에 보관하는 api를 구현하세요. -->
+	<!-- 해당 생성한 프로시저
+	DELIMITER $$
+		DROP PROCEDURE IF EXISTS addCoupon$$
+		CREATE PROCEDURE addCoupon(IN i INT)
+		BEGIN
+			DECLARE x INT;
+			SET x = 0; 
+			WHILE x < i DO
+				SET x = x + 1;
+		
+				SELECT @S_COUPON_ID := CONCAT(date_format(now(), '%Y%m%d%H%i') ,'CP',  
+					LPAD(CAST(CAST(rand()*10000 as unsigned) as char), 8, '0')) AS COUPONID
+				FROM DUAL;
+
+				INSERT INTO TN_COUPON
+				(COUPON_ID, STATE_SE) VALUES (@S_COUPON_ID,'N');
+				COMMIT;
+			END WHILE;
+		END$$
+	DELIMITER ;
+	 -->
+	<update id="addCoupon" parameterType="int">
+	{CALL addCoupon(#{cnt, jdbcType=INTEGER, mode=IN})}
+	</update>
+
+	<!-- 2. 생성된 쿠폰중 하나를 사용자에게 지급하는 api를 구현하세요. -->
+	<update id="sendCoupon" parameterType="String">
+		UPDATE TN_COUPON
+		SET STATE_SE = 'S',
+			SEND_DT = CURDATE(),
+			EXPIRE_DT = CURDATE() + INTERVAL 30 DAY
+		WHERE COUPON_ID = #{couponId}
+		AND STATE_SE = 'N'
+	</update>	
+	
+	<!-- 3. 사용자에게 지급된 쿠폰을 조회하는 api를 구현하세요. -->
+	<select id="paidCouponList" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT COUPON_ID AS couponId,
+			DATE_FORMAT(SEND_DT, '%Y%m%d') AS sendDt,
+			DATE_FORMAT(EXPIRE_DT, '%Y%m%d') AS expireDt,
+			STATE_SE AS stateSe
+		FROM TN_COUPON 
+		WHERE STATE_SE = 'S'
+		]]>
+	</select>
+
+	<!-- 4. 지급된 쿠폰중 하나를 사용하는  api를 구현하세요. -->	
+	<update id="useCoupon" parameterType="String">
+		UPDATE TN_COUPON
+		SET STATE_SE = 'U'
+		WHERE COUPON_ID = #{couponId}
+		AND STATE_SE = 'S'
+	</update>
+
+	<!-- 5. 지급된 쿠폰중 하나를 사용 취소하는 api를 구현하세요. -->
+	<update id="cancleCoupon" parameterType="String">
+		UPDATE TN_COUPON
+		SET STATE_SE = 'N',
+			EXPIRE_DT = NULL,
+			SEND_DT = NULL
+		WHERE COUPON_ID = #{couponId}
+		AND STATE_SE = 'S'
+	</update>	
+	
+	<!-- 6. 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회하는 api를 구현하세요. -->
+	<select id="expireCoupon" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT COUPON_ID AS couponId
+			FROM TN_COUPON 
+			WHERE STATE_SE = 'S' 
+			AND EXPIRE_DT= CURDATE()
+		]]>
+	</select>
+	
+	<!-- 선택 7. 발급된 쿠폰중 만료일 3일전 사용자에게 메세지를 발송하는 기능을 구현하세요. -->
+	<select id="checkExpireCoupon" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT COUPON_ID AS couponId
+			FROM TN_COUPON 
+			WHERE STATE_SE = 'S' 
+			AND EXPIRE_DT= CURDATE() + INTERVAL 3 DAY
+		]]>
+	</select>
+	
+	<!-- 사용하지 않은 쿠폰 아이디 조회 -->
+	<select id="unusedCouponId" resultType="String">
+		<![CDATA[
+		SELECT COUPON_ID AS couponId
+		FROM TN_COUPON 
+		WHERE STATE_SE = 'N'
+		LIMIT 1
+		]]>
+	</select>
+	
+	<!-- 전송된 쿠폰 여부 확인 -->
+	<select id="validCoupon" parameterType="String" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM TN_COUPON 
+			WHERE STATE_SE = 'S'
+			AND COUPON_ID = #{couponId}
+		]]>
+	</select>
+</mapper>

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: springboot_setting
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: hjjeon
+Implementation-Vendor-Id: com.springboot
+Build-Jdk: 1.8.0_251
+Implementation-URL: http://projects.spring.io/spring-boot/coin/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
