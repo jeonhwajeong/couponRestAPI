@@ -44,6 +44,8 @@ A) 스케쥴 사용하여 매일 16:10분 수행 -> 지급되고 사용하지 �
 ## 빌드 및 실행 방법
 ### 환경 셋팅
 ### 1.DB MYSQL 설치  
+> https://dev.mysql.com/downloads/windows/installer/8.0.html  
+  
    **스키마 생성**
 ```
 username : root
@@ -86,8 +88,15 @@ DELIMITER;
 > git clone https://github.com/jeonhwajeong/couponRestAPI
   
 ### 3.SPRING BOOT 설치  
+> https://spring.io/tools  
+  
 > 다운 받은 소스 OPEN : File > Open Projects from file system > 폴더선택 > finish  
 > 수행 : 프로젝트 클릭 > Run As>Spring Boot App  
 
 ### 3.POSTMAN 설치
 > Chrome App 클릭 > POSTMAN 설치 > POSTMAN 수행 > GET/POST/PUT 설정 >  URL 입력 > SEND ! 
+```
+**예제**
+- GET http://localhost:8080/paidCouponList?  
+- PUT http://localhost:8080/useCoupon?couponId=2020...  
+```
