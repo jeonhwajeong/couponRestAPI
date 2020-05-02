@@ -1,5 +1,4 @@
 # coupon Rest API
-
 ## 개발 환경
 - SPRING BOOT  
 - MYSQL  
@@ -87,8 +86,8 @@ DELIMITER;
 > git clone https://github.com/jeonhwajeong/couponRestAPI
   
 ### 3.SPRING BOOT 설치  
-   다운 받은 소스 OPEN : File > >
-   수행 : **프로젝트 클릭 > Run As>Spring Boot App**  
+> 다운 받은 소스 OPEN : File > Open Projects from file system > 폴더선택 > finish  
+> 수행 : 프로젝트 클릭 > Run As>Spring Boot App  
 
 ### 3.POSTMAN 설치
-   Chrome App 클릭 > POSTMAN 설치 > POSTMAN 수행 > GET/POST/PUT 설정 >  URL 입력 > SEND ! 
+> Chrome App 클릭 > POSTMAN 설치 > POSTMAN 수행 > GET/POST/PUT 설정 >  URL 입력 > SEND ! 
